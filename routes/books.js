@@ -15,36 +15,29 @@ const upload = multer({
 });
 
 router.get("/", async (req, res) => {
-   let query = Book.find();
-   
-   if(req.query.title != null && req.query.title != null){
-      query = query.regex("title", new RegExp(req.query.title, "i"))
-   }
+  let query = Book.find();
 
-   if(req.query.publishBefore != null && req.query.publishBefore != ""){
-      query = query.lte("publishDate", req.query.publishBefore)
-   }
+  if (req.query.title != null && req.query.title != null)
+    query = query.regex("title", new RegExp(req.query.title, "i"));
 
-   if(req.query.publishAfter != null && req.query.publishAfter != ""){
-      query = query.gte("publishDate", req.query.publishAfter)
-   }
-   try {
-      const books = await query.exec();
-      res.render("books/index", {
-         books: books,
-         searchOptions: req.query
-      })
-   } catch (error) {
-      res.redirect("/")
-   }
-  
+  if (req.query.publishBefore != null && req.query.publishBefore != "")
+    query = query.lte("publishDate", req.query.publishBefore);
+
+  if (req.query.publishAfter != null && req.query.publishAfter != "")
+    query = query.gte("publishDate", req.query.publishAfter);
+
+  try {
+    const books = await query.exec();
+    res.render("books/index", {
+      books: books,
+      searchOptions: req.query,
+    });
+  } catch (error) {
+    res.redirect("/");
+  }
 });
 
-
-
-router.get("/new", async (req, res) => {
-   renderNewPage(res, new Book())
-});
+router.get("/new", async (req, res) => renderNewPage(res, new Book()));
 
 router.post("/", upload.single("cover"), async (req, res) => {
   const fileName = req.file != null ? req.file.filename : null;
@@ -53,7 +46,7 @@ router.post("/", upload.single("cover"), async (req, res) => {
     description: req.body.description,
     publishDate: new Date(req.body.publishDate),
     coverImageName: fileName,
-    pageCount:  req.body.pageCount,
+    pageCount: req.body.pageCount,
     author: req.body.author,
   });
 
@@ -61,21 +54,17 @@ router.post("/", upload.single("cover"), async (req, res) => {
     const newBook = await book.save();
     res.redirect("books");
   } catch {
-   if(book.coverImageName != null)
-      removeCover(book.coverImageName)
-   renderNewPage(res, book, true)
+    if (book.coverImageName != null) removeCover(book.coverImageName);
+    renderNewPage(res, book, true);
   }
 });
-
 
 async function renderNewPage(res, book, hasError = false) {
   try {
     const authors = await Author.find({});
     const params = { authors: authors, book: book };
 
-    if(hasError){
-      params.errorMessage = "Error creating book"
-    }
+    if (hasError) params.errorMessage = "Error creating book";
 
     res.render("books/new", params);
   } catch (error) {
@@ -83,11 +72,10 @@ async function renderNewPage(res, book, hasError = false) {
   }
 }
 
-
-function removeCover(fileName){
-   fs.unlink(path.join(uploadPath, fileName), err => {
-      if(err) console.log(err);
-   })
+function removeCover(fileName) {
+  fs.unlink(path.join(uploadPath, fileName), (err) => {
+    if (err) console.log(err);
+  });
 }
 
 module.exports = router;
