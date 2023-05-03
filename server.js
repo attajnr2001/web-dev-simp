@@ -4,6 +4,7 @@ const app = express();
 const mongoose = require("mongoose");
 const ejs = require("ejs");
 require("dotenv").config();
+const methodOverride = require("method-override")
 const port = process.env.port;
 const bodyParser = require("body-parser");
 const flash = require("connect-flash");
@@ -19,6 +20,7 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(layouts);
+app.use(methodOverride("_method"))
 app.use(express.static("public"));
 app.use(
   bodyParser.urlencoded({
@@ -36,6 +38,7 @@ app.use(
 );
 
 app.use(flash());
+
 
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");

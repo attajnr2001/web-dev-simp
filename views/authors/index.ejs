@@ -6,7 +6,11 @@
   <button type="submit">Search</button>
 </form>
 
-<br>
+<br />
 <% authors.forEach(author => { %>
-     <div class="authorName"><%= author.name %></div>
-<% }); %>
+<div class="authorName"><%= author.name %></div>
+<a href="/authors/<%= author.id %>">View</a>
+<a href="/authors/<%= author.id %>/edit">Edit</a>
+
+<%- include("../partials/deleteForm.ejs", {url: `/authors/${author.id}`}) %> <%
+}); %>

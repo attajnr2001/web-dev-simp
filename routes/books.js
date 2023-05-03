@@ -63,6 +63,7 @@ async function renderNewPage(res, book, hasError = false) {
 }
 
 
+
 function saveCover(book, coverEncoded){
    if(coverEncoded == null) return;
    const cover = JSON.parse(coverEncoded)
