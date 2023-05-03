@@ -1,4 +1,8 @@
 <h2>All Books</h2>
+
 <% books.forEach(book => { %>
+   <a href="/books/<%= book.id %>">
    <img width="150" height="100" src="<%= book.coverImagePath %>" alt="" />
+</a> 
 <% }); %>
+

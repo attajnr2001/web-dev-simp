@@ -93,7 +93,7 @@ router.delete("/:id", async (req, res) => {
 
    try {
      author = await Author.findById(req.params.id);
-     await author.remove();
+     await author.deleteOne({_id: req.params.id})
      req.flash("success_msg", "Registration successful");
 
      res.redirect(`/authors`);
